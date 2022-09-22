@@ -7,9 +7,25 @@ const StudentList = () => {
     formState: { errors },
   } = useForm({ mode: "onChange" });
 
+  const fetchList = async (data) => {
+    console.log(data);
+    const response = await (
+      await fetch("/api/index", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data,
+        }),
+      })
+    ).json();
+    console.log(response);
+  };
+
   return (
     <>
-      <form onSubmit={handleSubmit()}>
+      <form onSubmit={handleSubmit(fetchList)}>
         <h1>학생기록부</h1>
         <label>학생이름</label>
         <input
