@@ -20,7 +20,7 @@ const StudentList = () => {
         />
         {errors.studentName && <p>{errors.studentName.message}</p>} <br />
         <label>학년</label>
-        <select {...register("grade")}>
+        <select {...register("studentGrade")}>
           <option value="grade_1">1학년</option>
           <option value="grade_2">2학년</option>
           <option value="grade_3">3학년</option>
@@ -82,17 +82,33 @@ const StudentList = () => {
         height: 40px;
         line-height: 40px;
       }
-      input {
+      input,
+      select  {
+        width: 140px;
         height: 30px;
         border: none;
         border-radius: 4px;
         background: #f2f2f2;
         padding: 0 15px;
+        margin-top: 20px
       }
       p {
+        display: inline;
         color: tomato;
         font-size: 12px;
-        margin: 0;
+        margin: 0 0 0 30px;
+      }
+      select {
+        margin-right: 30px;
+      }
+      button {
+        width: 120px;
+        height: 40px;
+        border: none;
+        border-radius: 4px;
+        background: #97D2EC;
+        margin-top: 30px;
+        cursor: pointer;
       }
       `}
       </style>
