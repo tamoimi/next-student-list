@@ -1,169 +1,170 @@
-import { useForm } from "react-hook-form";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import { useEffect, useState } from "react";
 
-const StudentList = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({ mode: "onChange" });
+export default function List() {
+  const [students, setStudents] = useState([]);
+  const getStudents = async () => {
+    const students = await (
+      await fetch(`/api/students`, { method: "GET" })
+    ).json();
+    setStudents(students);
+  };
 
-  const router = useRouter()
+  useEffect(() => {
+    getStudents();
+  }, []);
 
-  const postStudents = async (data) => {
-    console.log(data);
+  //useEffect(()=>{},[]): 함수, 언제실행할지, 마지막곳의 값이 변할때 마다 useEffect가 실행
+  //useEffect는 함수가 실행될때 자동적으로 실행되는것
+  //students의 값이 바뀔때마다 useEffect가 활성화
 
-    // 총점 평균
-    // let kor = kor;
-    // let eng = eng;
-    // let math = math;
-
-    // const subjectSum = kor + eng + math;
-    // const sunjectAvg = subjectSum / 3;
-
-    // console.log(subjectSum);
-    // console.log(sunjectAvg);
-
+  const delStudents = async (studentId) => {
     const response = await (
-      await fetch("/api/students", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      await fetch(`api/students`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          data,
+          id: studentId,
         }),
       })
     ).json();
     console.log(response);
+
+    // 화면 갱신 코드
+    setStudents((prev) => prev.filter((student) => student.id !== response.id));
   };
-
-  // const getStudents = async () => {
-  //   console.log("getStudents 호출됨");
-    
-  // }
-
-
 
   return (
     <>
-      <form onSubmit={handleSubmit(postStudents)}>
-        <h1>학생기록부</h1>
-        <label>학생이름</label>
-        <input
-          {...register("studentName", {
-            required: "필수 입력값 입니다.",
-          })}
-          placeholder="홍길동"
-        />
-        {errors.studentName && <p>{errors.studentName.message}</p>} <br />
-        <label>학년</label>
-        <select {...register("studentGrade")}>
-          <option value="1">1학년</option>
-          <option value="2">2학년</option>
-          <option value="3">3학년</option>
-        </select>{" "}
-        <br />
-        <label>국어점수</label>
-        <input
-          type="number"
-          {...register("kor", {
-            required: "필수 입력값 입니다.",
-            min: { value: 0, message: "점수는 0이상이여야 합니다." },
-            max: { value: 100, message: "점수는 100이하여야 합니다." },
-          })}
-        />
-        {errors.kor && <p>{errors.kor.message}</p>} <br />
-        <label>영어점수</label>
-        <input
-          type="number"
-          min="0"
-          step="1"
-          {...register("eng", {
-            required: "필수 입력값 입니다.",
-            min: { value: 0, message: "점수는 0이상이여야 합니다." },
-            max: { value: 100, message: "점수는 100이하여야 합니다." },
-          })}
-        />
-        {errors.eng && <p>{errors.eng.message}</p>} <br />
-        <label>수학점수</label>
-        <input
-          type="number"
-          {...register("math", {
-            required: "필수 입력값 입니다.",
-            min: { value: 0, message: "점수는 0이상이여야 합니다." },
-            max: { value: 100, message: "점수는 100이하여야 합니다." },
-          })}
-        />
-        {errors.math && <p>{errors.math.message}</p>} <br />
-        <button type="submit">제출하기</button>
-        <Link href={`/list`}>
+      <TableContainer component={Paper}>
+        <h2>학생 리스트</h2>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>이름</TableCell>
+              <TableCell>학년</TableCell>
+              <TableCell>국어 점수</TableCell>
+              <TableCell>영어 점수</TableCell>
+              <TableCell>수학 점수</TableCell>
+              <TableCell>총점</TableCell>
+              <TableCell>총평균값</TableCell>
+              <TableCell>수정하기</TableCell>
+              <TableCell>삭제하기</TableCell>
+            </TableRow>{" "}
+          </TableHead>
+          <TableBody>
+            {students.map((student) => (
+              <TableRow
+                key={student.id}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {student.id}
+                </TableCell>
+                <TableCell>{student.studentName}</TableCell>
+                <TableCell>{student.studentGrade}학년</TableCell>
+                <TableCell>{student.kor}점</TableCell>
+                <TableCell>{student.eng}점</TableCell>
+                <TableCell>{student.math}점</TableCell>
+                <TableCell>{student.total}점</TableCell>
+                <TableCell>{student.average}점</TableCell>
+                <TableCell>
+                  <button
+                    style={{ width: 35, margin: 15 }}
+                    // onClick={() => {
+                    //   delStudents(student.id);
+                    // }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
+                      />
+                    </svg>
+                  </button>
+                </TableCell>
+                <TableCell>
+                  <button
+                    style={{ width: 35, margin: 15 }}
+                    onClick={() => {
+                      delStudents(student.id);
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                      />
+                    </svg>
+                  </button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <Link href={`/inputInfo`}>
           <a>
-            <button type="button">불러오기</button>
+            <button type="button">학생기록부 입력하기</button>
           </a>
         </Link>
-      </form>
+      </TableContainer>
       <style>
         {`
-      html {
-        background: #f2f2f2;
-      }
-      div {
-        width: 600px;
-        height: 600px;
-        margin: 0 auto;
-        background: white;
-        border-radius: 10px;
-        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-      }
-      form {
-        margin: 100px 0;
-        padding: 100px 0;
-        text-align: center;
-      }
-      label {
-        display: inline-block;
-        width: 100px;
+    .css-11xur9t-MuiPaper-root-MuiTableContainer-root {
+      width: 1200px;
+      margin: 0 auto;
+    }
+    .css-1q1u3t4-MuiTableRow-root {
+      background: #CDF0EA;
+    }
+    .css-1ygcj2i-MuiTableCell-root {
+      text-align: center;
+    }
+    .css-11xur9t-MuiPaper-root-MuiTableContainer-root {
+      text-align: center;
+    }
+    .css-1ex1afd-MuiTableCell-root {
+      text-align: center;
+    }
+    button {
+        width: 200px;
         height: 40px;
-        line-height: 40px;
-      }
-      input,
-      select  {
-        width: 140px;
-        height: 30px;
+        margin: 50px 0;
         border: none;
         border-radius: 4px;
-        background: #f2f2f2;
-        padding: 0 15px;
-        margin-top: 20px
-      }
-      p {
-        display: inline;
-        color: tomato;
-        font-size: 12px;
-        margin: 0 0 0 30px;
-      }
-      select {
-        margin-right: 30px;
-      }
-      button {
-        width: 120px;
-        height: 40px;
-        border: none;
-        border-radius: 4px;
-        background: #FFC4C4;
-        margin: 30px 15px;
+        background: #CDF0EA;
         cursor: pointer;
         transition: all 0.5s;
-      }
-      button:hover {
-        background: #CDF0EA;
-      }
-      `}
+    }
+    button:hover {
+        background: #FFC4C4;
+    }
+    `}
       </style>
     </>
   );
-};
-
-export default StudentList;
+}
