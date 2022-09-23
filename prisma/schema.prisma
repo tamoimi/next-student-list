@@ -14,9 +14,9 @@ model List {
   id              Int             @id @default(autoincrement())
   studentName     String 
   studentGrade    Int
-  kor Int
-  end Int
-  math Int
+  kor             Int
+  end             Int
+  math            Int
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt  
 
