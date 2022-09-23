@@ -17,6 +17,8 @@ model Student {
   kor             Int
   eng             Int
   math            Int
+  total           Int
+  average         Int
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt  
 }
