@@ -1,4 +1,6 @@
 import { useForm } from "react-hook-form";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 const StudentList = () => {
   const {
@@ -7,11 +9,21 @@ const StudentList = () => {
     formState: { errors },
   } = useForm({ mode: "onChange" });
 
+  const router = useRouter()
+
   const postStudents = async (data) => {
     console.log(data);
 
     // 총점 평균
-    
+    // let kor = kor;
+    // let eng = eng;
+    // let math = math;
+
+    // const subjectSum = kor + eng + math;
+    // const sunjectAvg = subjectSum / 3;
+
+    // console.log(subjectSum);
+    // console.log(sunjectAvg);
 
     const response = await (
       await fetch("/api/students", {
@@ -27,6 +39,13 @@ const StudentList = () => {
     console.log(response);
   };
 
+  // const getStudents = async () => {
+  //   console.log("getStudents 호출됨");
+    
+  // }
+
+
+
   return (
     <>
       <form onSubmit={handleSubmit(postStudents)}>
@@ -41,9 +60,9 @@ const StudentList = () => {
         {errors.studentName && <p>{errors.studentName.message}</p>} <br />
         <label>학년</label>
         <select {...register("studentGrade")}>
-          <option value="grade1">1학년</option>
-          <option value="grade2">2학년</option>
-          <option value="grade3">3학년</option>
+          <option value="1">1학년</option>
+          <option value="2">2학년</option>
+          <option value="3">3학년</option>
         </select>{" "}
         <br />
         <label>국어점수</label>
@@ -79,7 +98,11 @@ const StudentList = () => {
         />
         {errors.math && <p>{errors.math.message}</p>} <br />
         <button type="submit">제출하기</button>
-        <button type="button">불러오기</button>
+        <Link href={`/list`}>
+          <a>
+            <button type="button">불러오기</button>
+          </a>
+        </Link>
       </form>
       <style>
         {`
@@ -129,13 +152,13 @@ const StudentList = () => {
         height: 40px;
         border: none;
         border-radius: 4px;
-        background: #97D2EC;
+        background: #FFC4C4;
         margin: 30px 15px;
         cursor: pointer;
         transition: all 0.5s;
       }
       button:hover {
-        background: #AEBDCA;
+        background: #CDF0EA;
       }
       `}
       </style>
