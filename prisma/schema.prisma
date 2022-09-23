@@ -10,14 +10,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model List {
+model Student {
   id              Int             @id @default(autoincrement())
   studentName     String 
-  studentGrade    Int
+  studentGrade    String
   kor             Int
-  end             Int
+  eng             Int
   math            Int
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt  
-
 }

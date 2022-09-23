@@ -7,10 +7,14 @@ const StudentList = () => {
     formState: { errors },
   } = useForm({ mode: "onChange" });
 
-  const fetchList = async (data) => {
+  const postStudents = async (data) => {
     console.log(data);
+
+    // 총점 평균
+    
+
     const response = await (
-      await fetch("/api/index", {
+      await fetch("/api/students", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -25,7 +29,7 @@ const StudentList = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit(fetchList)}>
+      <form onSubmit={handleSubmit(postStudents)}>
         <h1>학생기록부</h1>
         <label>학생이름</label>
         <input
@@ -37,9 +41,9 @@ const StudentList = () => {
         {errors.studentName && <p>{errors.studentName.message}</p>} <br />
         <label>학년</label>
         <select {...register("studentGrade")}>
-          <option value="grade_1">1학년</option>
-          <option value="grade_2">2학년</option>
-          <option value="grade_3">3학년</option>
+          <option value="grade1">1학년</option>
+          <option value="grade2">2학년</option>
+          <option value="grade3">3학년</option>
         </select>{" "}
         <br />
         <label>국어점수</label>
@@ -55,6 +59,8 @@ const StudentList = () => {
         <label>영어점수</label>
         <input
           type="number"
+          min="0"
+          step="1"
           {...register("eng", {
             required: "필수 입력값 입니다.",
             min: { value: 0, message: "점수는 0이상이여야 합니다." },
@@ -73,6 +79,7 @@ const StudentList = () => {
         />
         {errors.math && <p>{errors.math.message}</p>} <br />
         <button type="submit">제출하기</button>
+        <button type="button">불러오기</button>
       </form>
       <style>
         {`
@@ -123,8 +130,12 @@ const StudentList = () => {
         border: none;
         border-radius: 4px;
         background: #97D2EC;
-        margin-top: 30px;
+        margin: 30px 15px;
         cursor: pointer;
+        transition: all 0.5s;
+      }
+      button:hover {
+        background: #AEBDCA;
       }
       `}
       </style>
