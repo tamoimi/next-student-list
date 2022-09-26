@@ -47,6 +47,8 @@ export default async function handler(req, res) {
     res.status(200).json(result);
   }
 
+
+
   if (req.method === "DELETE") {
     console.log("DELETE 호출");
     const {
@@ -55,7 +57,7 @@ export default async function handler(req, res) {
 
     const result = await client.student.delete({
       where: {
-        id: +id,
+        id,
       },
     });
     res.status(200).json(result);
