@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const StudentList = () => {
   const {
@@ -9,7 +10,7 @@ const StudentList = () => {
     formState: { errors },
   } = useForm({ mode: "onChange" });
 
-  const router = useRouter()
+  const router = useRouter();
 
   const postStudents = async (data) => {
     console.log(data);
@@ -26,6 +27,8 @@ const StudentList = () => {
       })
     ).json();
     console.log(response);
+
+    router.push("/")
   };
 
   return (
@@ -80,11 +83,6 @@ const StudentList = () => {
         />
         {errors.math && <p>{errors.math.message}</p>} <br />
         <button type="submit">제출하기</button>
-        <Link href={`/`}>
-          <a>
-            <button type="button">불러오기</button>
-          </a>
-        </Link>
       </form>
       <style>
         {`
