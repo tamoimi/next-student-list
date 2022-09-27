@@ -23,26 +23,30 @@ export default async function handler(req, res) {
     res.status(200).json(result);
   }
 
-  if (req.method === "PATCH") {
+  if (req.method === "PUT") {
     const {
       body: {
-        data: {
-          studentName,
-          studentGrade: studentGrade,
-          kor: korNumber,
-          eng: engNumber,
-          math: mathNumber,
-        },
+        data: { studentName, studentGrade, kor, eng, math },
       },
+      query: { id },
     } = req;
 
-    const result = await client.student.updateMany({
+    const korNumber = parseInt(kor);
+    const engNumber = parseInt(eng);
+    const mathNumber = parseInt(math);
+
+    const total = korNumber + engNumber + mathNumber;
+    const average = parseInt(total / 3);
+
+    const result = await client.student.update({
       data: {
         studentName,
         studentGrade,
         kor: korNumber,
         eng: engNumber,
         math: mathNumber,
+        total: total,
+        average: average,
       },
       where: {
         id: +id,

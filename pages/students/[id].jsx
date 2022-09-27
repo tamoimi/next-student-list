@@ -24,32 +24,9 @@ const StudentList = ({ results }) => {
     setValue("math", results.math);
   }, [results, setValue]);
 
-  const postStudents = async (data) => {
-    console.log(data);
-
-    const response = await (
-      await fetch("/api/students", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          data,
-        }),
-      })
-    ).json();
-    console.log(response);
-  };
-
-  // const getStudents = async () => {
-  //   const result = await (
-  //     await fetch("/api/students", { method: "GET" })
-  //   ).json();
-  //   return result.results;
-  // };
-
   //학생기록부 업데이트
-  const update = async () => {
+  const update = async (e) => {
+    e.preventDefault();
     const studentName = getValues("studentName");
     const studentGrade = getValues("studentGrade");
     const kor = getValues("kor");
@@ -57,8 +34,8 @@ const StudentList = ({ results }) => {
     const math = getValues("math");
 
     const response = await (
-      await fetch("/api/students", {
-        method: "PATCH",
+      await fetch(`/api/students/${results.id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -68,11 +45,12 @@ const StudentList = ({ results }) => {
       })
     ).json();
     console.log(response);
+    router.push("/");
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit(postStudents)}>
+      <form>
         <h1>학생기록부</h1>
         <label>학생이름</label>
         <input
@@ -121,12 +99,6 @@ const StudentList = ({ results }) => {
           })}
         />
         {errors.math && <p>{errors.math.message}</p>} <br />
-        <button type="submit">제출하기</button>
-        <Link href={`/`}>
-          <a>
-            <button type="button">불러오기</button>
-          </a>
-        </Link>
         <button type="submit" onClick={update}>
           수정하기
         </button>
