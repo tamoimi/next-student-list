@@ -60,7 +60,6 @@ export default function List() {
   };
 
   const [orderState, setOrderState] = useState({
-    sortData: students,
     sortBy: "id",
     sortOrder: "asc",
   });
@@ -75,6 +74,36 @@ export default function List() {
     }
   };
 
+  const requestSort = (sortByProp) => {
+    console.log("sortByProp", sortByProp);
+    const { sortBy: oldSortBy, sortOrder: oldSortOrder } = orderState;
+
+    let newSortOrder = oldSortOrder;
+    let newSortBy = oldSortBy;
+    let newData;
+
+    //props로 전달된 정렬기준이 state에 저장된 정렬기준과 같은지에 따라 분기
+    if (sortByProp === oldSortBy) {
+      //같다면 정렬순서만 변경
+      newSortOrder = oldSortOrder === "asc" ? "desc" : "asc";
+    } else {
+      //다르면 새 정렬기준을 state에 저장하고, 정렬순서는 ASC로 설정한다.
+      newSortBy = sortByProp;
+      newSortOrder = "asc";
+    }
+    console.log("newSortOrder", newSortOrder);
+    console.log("newSortBy", newSortBy);
+    newData = students.sort((a, b) =>
+      compareFunction(a, b, newSortBy, newSortOrder)
+    );
+    console.log(newData);
+    setOrderState({
+      sortBy: newSortBy,
+      sortOrder: newSortOrder,
+    });
+    setStudents(newData);
+  };
+
   return (
     <>
       {students.length > 0 ? (
@@ -82,82 +111,84 @@ export default function List() {
           <TableContainer component={Paper}>
             <h2>학생 리스트</h2>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <thead>
-                <TableCell>
-                  <TableSortLabel
-                    active={sortBy === "id"}
-                    direction={sortOrder}
-                    onClick={() => requestSort("id")}
-                  >
-                    Id
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell>
-                  <TableSortLabel
-                    active={sortBy === "name"}
-                    direction={sortOrder}
-                    onClick={() => requestSort("name")}
-                  >
-                    이름
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell>
-                  <TableSortLabel
-                    active={sortBy === "studentGrade"}
-                    direction={sortOrder}
-                    onClick={() => requestSort("studentGrade")}
-                  >
-                    학년
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell>
-                  <TableSortLabel
-                    active={sortBy === "kor"}
-                    direction={sortOrder}
-                    onClick={() => requestSort("kor")}
-                  >
-                    국어 점수
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell>
-                  <TableSortLabel
-                    active={sortBy === "eng"}
-                    direction={sortOrder}
-                    onClick={() => requestSort("eng")}
-                  >
-                    영어 점수
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell>
-                  <TableSortLabel
-                    active={sortBy === "math"}
-                    direction={sortOrder}
-                    onClick={() => requestSort("math")}
-                  >
-                    수학 점수
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell>
-                  <TableSortLabel
-                    active={sortBy === "total"}
-                    direction={sortOrder}
-                    onClick={() => requestSort("total")}
-                  >
-                    총점
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell>
-                  <TableSortLabel
-                    active={sortBy === "average"}
-                    direction={sortOrder}
-                    onClick={() => requestSort("average")}
-                  >
-                    총평균값
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell>수정하기</TableCell>
-                <TableCell>삭제하기</TableCell>
-              </thead>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <TableSortLabel
+                      active={orderState.sortBy === "id"}
+                      direction={orderState.sortOrder}
+                      onClick={() => requestSort("id")}
+                    >
+                      Id
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={orderState.sortBy === "studentName"}
+                      direction={orderState.sortOrder}
+                      onClick={() => requestSort("studentName")}
+                    >
+                      이름
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={orderState.sortBy === "studentGrade"}
+                      direction={orderState.sortOrder}
+                      onClick={() => requestSort("studentGrade")}
+                    >
+                      학년
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={orderState.sortBy === "kor"}
+                      direction={orderState.sortOrder}
+                      onClick={() => requestSort("kor")}
+                    >
+                      국어 점수
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={orderState.sortBy === "eng"}
+                      direction={orderState.sortOrder}
+                      onClick={() => requestSort("eng")}
+                    >
+                      영어 점수
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={orderState.sortBy === "math"}
+                      direction={orderState.sortOrder}
+                      onClick={() => requestSort("math")}
+                    >
+                      수학 점수
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={orderState.sortBy === "total"}
+                      direction={orderState.sortOrder}
+                      onClick={() => requestSort("total")}
+                    >
+                      총점
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={orderState.sortBy === "average"}
+                      direction={orderState.sortOrder}
+                      onClick={() => requestSort("average")}
+                    >
+                      총평균값
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>수정하기</TableCell>
+                  <TableCell>삭제하기</TableCell>
+                </TableRow>
+              </TableHead>
               <TableBody>
                 {students.map((student) => (
                   <TableRow
@@ -225,6 +256,15 @@ export default function List() {
                     </TableCell>
                   </TableRow>
                 ))}
+                <TableRow>
+                <TablePagination
+                  count={totalCount}
+                  rowsPerPage={rowsPerPage}
+                  page={currentPage}
+                  onPageChange={pageChangeHandler}
+                  onRowsPerPageChange={rowsPerPageChangeHandler}
+                />
+              </TableRow>
               </TableBody>
             </Table>
             <Link href={`/students/`}>
@@ -234,16 +274,6 @@ export default function List() {
                 </button>
               </a>
             </Link>
-
-            <TableBody>
-              <TablePagination
-                count={totalCount}
-                rowsPerPage={rowsPerPage}
-                page={currentPage}
-                onPageChange={pageChangeHandler}
-                onRowsPerPageChange={rowsPerPageChangeHandler}
-              />
-            </TableBody>
           </TableContainer>
         </>
       ) : (
